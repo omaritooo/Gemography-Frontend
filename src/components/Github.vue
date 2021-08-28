@@ -1,13 +1,16 @@
 <template>
   <div class="">
     <div
-      class="justify-start px-10 my-10 text-black flex flex-row text-left w-4/5"
+      class="flex flex-row justify-start w-3/5 px-10 my-10 text-left text-black"
       v-for="repo in repos"
       :key="repo.id"
     >
-      <div class="border-2 border-black flex content-evenly">
+      <div
+        id="avatar"
+        class="flex justify-center border-2 border-black content-evenly"
+      >
         <img
-          width="200"
+          width="150"
           height="200"
           class=""
           v-bind:src="repo.owner.avatar_url"
@@ -19,14 +22,14 @@
         <p class="text-md">{{ repo.description }}</p>
         <div class="flex flex-row">
           <div class="flex flex-row">
-            <div class="border-2 p-2 rounded-lg border-black">
+            <div class="p-2 border-2 border-black rounded-lg">
               Stars: {{ repo.stargazers_count }}
             </div>
-            <div class="border-2 p-2 rounded-lg border-black mx-6">
+            <div class="p-2 mx-6 border-2 border-black rounded-lg">
               Issues: {{ repo.stargazers_count }}
             </div>
           </div>
-          <div class="text-left p-2">
+          <div class="p-2 text-left">
             Submitted
             <span>
               {{ repo.created_at | moment("from", " 2017-11-22", true) }}</span
@@ -36,18 +39,21 @@
         </div>
       </div>
     </div>
+    <infinite-loading @infinite="infiniteHandler"></infinite-loading>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 const URL =
-  "https://api.github.com/search/repositories?q=created:%3E2017-10-22&sort=stars&order=desc&page=1";
+  "https://api.github.com/search/repositories?q=created:%3E2017-10-22&sort=stars&order=desc&page=";
+
 export default {
   data() {
     return {
       repos: [],
       users: [],
+      page: 1,
     };
   },
   props: {
@@ -61,11 +67,26 @@ export default {
     stargazers_count: Number,
     html_url: String,
   },
-  mounted() {
-    axios.get(URL).then((response) => (this.repos = response.data.items));
-    axios.get(URL).then((responsee) => (this.users = responsee.data.owner));
+
+  methods: {
+    infiniteHandler($state) {
+      axios
+        .get(URL, {
+          params: {
+            page: this.page,
+          },
+        })
+        .then(({ data }) => {
+          if (data.items.length) {
+            this.page += 1;
+            this.repos.push(...data.items);
+            $state.loaded();
+          } else {
+            $state.complete();
+          }
+        });
+    },
   },
-  methods() {},
 };
 </script>
 
@@ -76,5 +97,9 @@ body {
 }
 #cardcontainer {
   max-height: 30vh;
+}
+#avatar {
+  min-width: 150px;
+  max-width: 200px;
 }
 </style>
