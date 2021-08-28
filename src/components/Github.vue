@@ -1,32 +1,34 @@
 <template>
   <div class="">
     <div
-      class="flex flex-row justify-start w-3/5 px-10 my-10 text-left text-black"
+      class="flex flex-row justify-start w-3/5 p-10 mb-10 ml-10 text-left text-white shadow-lg  card"
       v-for="repo in repos"
       :key="repo.id"
     >
       <div
         id="avatar"
-        class="flex justify-center border-2 border-black content-evenly"
+        class="flex justify-center border-2 border-white content-evenly"
       >
-        <img
-          width="150"
-          height="200"
-          class=""
-          v-bind:src="repo.owner.avatar_url"
-          alt=""
-        />
+        <a v-bind:href="repo.html_url">
+          <img
+            width="150"
+            height="200"
+            class=""
+            v-bind:src="repo.owner.avatar_url"
+            alt=""
+          />
+        </a>
       </div>
       <div id="cardcontainer" class="flex flex-col mx-20 justify-evenly">
-        <a class="text-2xl font-bold">{{ repo.name }}</a>
+        <a :href="repo.html_url" class="text-2xl font-bold">{{ repo.name }}</a>
         <p class="text-md">{{ repo.description }}</p>
         <div class="flex flex-row">
           <div class="flex flex-row">
-            <div class="p-2 border-2 border-black rounded-lg">
-              Stars: {{ repo.stargazers_count }}
+            <div class="p-2 border-2 border-white rounded-lg">
+              Stars: {{ numformat(repo.stargazers_count) }}
             </div>
-            <div class="p-2 mx-6 border-2 border-black rounded-lg">
-              Issues: {{ repo.stargazers_count }}
+            <div class="p-2 mx-6 border-2 border-white rounded-lg">
+              Issues: {{ numformat(repo.forks_count) }}
             </div>
           </div>
           <div class="p-2 text-left">
@@ -34,7 +36,7 @@
             <span>
               {{ repo.created_at | moment("from", " 2017-11-22", true) }}</span
             >
-            ago by {{ repo.owner.login }}
+            ago by <a :href="repo.owner.html_url">{{ repo.owner.login }}</a>
           </div>
         </div>
       </div>
@@ -66,9 +68,15 @@ export default {
     created_at: Date,
     stargazers_count: Number,
     html_url: String,
+    forks_count: Number,
   },
 
   methods: {
+    numformat(num) {
+      return Math.abs(num) > 999
+        ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + "k"
+        : Math.sign(num) * Math.abs(num);
+    },
     infiniteHandler($state) {
       axios
         .get(URL, {
@@ -101,5 +109,8 @@ body {
 #avatar {
   min-width: 150px;
   max-width: 200px;
+}
+.card {
+  background-color: #003554;
 }
 </style>
