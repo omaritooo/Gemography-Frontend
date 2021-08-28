@@ -1,5 +1,6 @@
 <template>
   <div class="">
+    <!-- card component structure -->
     <div
       class="flex flex-row justify-start w-3/5 p-10 mb-10 ml-10 text-left text-white shadow-lg  card"
       v-for="repo in repos"
@@ -28,7 +29,7 @@
               Stars: {{ numformat(repo.stargazers_count) }}
             </div>
             <div class="p-2 mx-6 border-2 border-white rounded-lg">
-              Issues: {{ numformat(repo.forks_count) }}
+              Issues: {{ numformat(repo.open_issues) }}
             </div>
           </div>
           <div class="p-2 text-left">
@@ -41,6 +42,7 @@
         </div>
       </div>
     </div>
+    <!-- infinite scroller icon-->
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
   </div>
 </template>
@@ -59,6 +61,7 @@ export default {
     };
   },
   props: {
+    /* props used to fetch endpoints */
     id: Number,
     name: String,
     description: String,
@@ -69,15 +72,20 @@ export default {
     stargazers_count: Number,
     html_url: String,
     forks_count: Number,
+    open_issues: Number,
   },
 
   methods: {
+    // function used to clean out number formatting (ex: 1240 to 1.2k)
     numformat(num) {
       return Math.abs(num) > 999
         ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + "k"
         : Math.sign(num) * Math.abs(num);
     },
+
+    //infinite scrolling function
     infiniteHandler($state) {
+      //fetching endpoints with axios
       axios
         .get(URL, {
           params: {
@@ -103,6 +111,8 @@ export default {
 body {
   font-family: "Segoe UI", sans-serif;
 }
+
+/* unifying avatar sizes for symmetry*/
 #cardcontainer {
   max-height: 30vh;
 }
