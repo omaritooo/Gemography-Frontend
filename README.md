@@ -1,24 +1,26 @@
-# frontend
+# Gemography Frontend
 
-## Project setup
+## Features Implemented
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+-Pagination
+-Infinite Loading
+-Fetching API Endpoints
+-Results in the last 30 days (relative to 2017-11-22)
 ```
 
-### Compiles and minifies for production
+### Technologies used
 ```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
+-CSS
+-TailwindCSS
+-Vue.JS (Vue2)
+-Axios
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Packages used
+```
+-Axios for vue2
+-Vue Infinite Loading
+
+```
+
+#### To Run this project locally use ``npm run serve``
